@@ -1,7 +1,7 @@
 """Example Streamlit chat UI that exposes a Feedback button and link to LangSmith traces."""
 
 import streamlit as st
-from expression_chain import get_expression_chain
+# from expression_chain import get_expression_chain
 from langchain.callbacks.tracers.run_collector import RunCollectorCallbackHandler
 from langchain.memory import StreamlitChatMessageHistory, ConversationBufferMemory
 from langchain.schema.runnable import RunnableConfig
@@ -197,38 +197,3 @@ if st.session_state.get("run_id"):
             st.session_state.feedback = {"feedback_id": str(feedback_record.id), "score": score}
         else:
             st.warning("Invalid feedback score.")
-
-
-## Prompt for more information, if feedback was submitted
-#if st.session_state.get("feedback"):
-#    feedback = st.session_state.get("feedback")
-#    feedback_id = feedback["feedback_id"]
-#    score = feedback["score"]
-#    if score == 0:
-#        # Add text input with a correction box
-#        correction = st.text_input(
-#            label="What would the correct or preferred response have been?",
-#            key=f"correction_{feedback_id}",
-#        )
-#        if correction:
-#            st.session_state.feedback_update = {
-#                "correction": {"desired": correction},
-#                "feedback_id": feedback_id,
-#            }
-#    if score == 1:
-#        comment = st.text_input(
-#            label="Anything else you'd like to add about this response?",
-#            key=f"comment_{feedback_id}",
-#        )
-#        if comment:
-#            st.session_state.feedback_update = {
-#                "comment": comment,
-#                "feedback_id": feedback_id,
-#            }
-#if st.session_state.get("feedback_update"):
-#    feedback_update = st.session_state.get("feedback_update")
-#    feedback_id = feedback_update.pop("feedback_id")
-#    client.update_feedback(feedback_id, **feedback_update)
-#    # Clear the comment or correction box
-#    _reset_feedback()
-#
