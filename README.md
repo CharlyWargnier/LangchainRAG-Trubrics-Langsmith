@@ -1,1 +1,1 @@
-# LangchainRAG-Trubrics-Langsmith
+# 🦜 Langchain RAG + Trubrics' Feeback + LangSmith
