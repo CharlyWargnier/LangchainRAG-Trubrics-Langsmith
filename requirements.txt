@@ -2,6 +2,8 @@ streamlit
 openai
 tiktoken
 streamlit-feedback
-langchain>=0.0.247
+# langchain>=0.0.247
+langchain==0.0.292
 langsmith>=0.0.23
+
 
