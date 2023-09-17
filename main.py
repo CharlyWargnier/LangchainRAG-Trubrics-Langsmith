@@ -1,7 +1,6 @@
 """Example Streamlit chat UI that exposes a Feedback button and link to LangSmith traces."""
 
 import streamlit as st
-# from expression_chain import get_expression_chain
 from langchain.callbacks.tracers.run_collector import RunCollectorCallbackHandler
 from langchain.memory import StreamlitChatMessageHistory, ConversationBufferMemory
 from langchain.schema.runnable import RunnableConfig
@@ -13,13 +12,41 @@ from vanilla_chain import get_llm_chain
 
 from essential_chain import initialize_chain
 
-
-client = Client()
+import os
 
 st.set_page_config(
     page_title="Chat with the Streamlit docs, powered by LangChain",
     page_icon="🦜",
 )
+
+# Set LangSmith environment variables
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
+
+os.environ["LANGCHAIN_API_KEY"] = "ls__ea506496a9f54be786205187a0bd84ed"
+
+os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
+os.environ["LANGCHAIN_PROJECT"] = st.sidebar.text_input(
+    "LangSmith Project", value="default"
+)
+
+langchain_api_key = st.sidebar.text_input(
+    "LangChain API Key", value="ls__ea506496a9f54be786205187a0bd84ed", type='password')
+
+if "last_run" not in st.session_state:
+    st.session_state["last_run"] = "some_initial_value"
+
+langchain_endpoint = "https://api.smith.langchain.com"
+client = Client(api_url=langchain_endpoint, api_key=langchain_api_key)
+# client = Client(api_url=LANGCHAIN_ENDPOINT, api_key=LANGCHAIN_API_KEY)
+
+
+# Set environment variables using the values from st.secrets
+os.environ['OPENAI_API_KEY'] = st.secrets["api_keys"]["OPENAI_API_KEY"]
+
+# The rest of your script...
+
+
+# client = Client(api_url=langchain_endpoint, api_key=langchain_api_key)
 
 st.subheader("Chat with the Streamlit docs, powered by LangChain 💬🦜")
 
