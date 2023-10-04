@@ -13,8 +13,6 @@ from langsmith import Client
 from streamlit_feedback import streamlit_feedback
 from langchain.callbacks.tracers.langchain import wait_for_all_tracers
 from vanilla_chain import get_llm_chain
-
-
 from essential_chain import initialize_chain
 
 import os
@@ -25,34 +23,27 @@ st.set_page_config(
 )
 
 # Set LangSmith environment variables
+os.environ['OPENAI_API_KEY'] = st.secrets["api_keys"]["OPENAI_API_KEY"]
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
-
 os.environ["LANGCHAIN_API_KEY"] = "ls__ea506496a9f54be786205187a0bd84ed"
-
 os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
 os.environ["LANGCHAIN_PROJECT"] = st.sidebar.text_input(
-    "LangSmith Project", value="default"
+    "Name your LangSmith Project", value="Streamlit Demo"
 )
 
 langchain_api_key = st.sidebar.text_input(
-    "LangChain API Key", value="ls__ea506496a9f54be786205187a0bd84ed", type='password')
+    "Add your LangSmith Key (Demo API key by default)", value="ls__ea506496a9f54be786205187a0bd84ed", type='password')
 
 if "last_run" not in st.session_state:
     st.session_state["last_run"] = "some_initial_value"
 
 langchain_endpoint = "https://api.smith.langchain.com"
 client = Client(api_url=langchain_endpoint, api_key=langchain_api_key)
-# client = Client(api_url=LANGCHAIN_ENDPOINT, api_key=LANGCHAIN_API_KEY)
-
-
-# Set environment variables using the values from st.secrets
-os.environ['OPENAI_API_KEY'] = st.secrets["api_keys"]["OPENAI_API_KEY"]
-
 
 col1, col2, col3 = st.columns([0.6, 3, 1])
 
 with col2:
-    st.image("images/logo.png", width=500)
+    st.image("images/logo.png", width=470)
     
 
 st.markdown('___')
@@ -85,7 +76,6 @@ _DEFAULT_SYSTEM_PROMPT = ""
 
 system_prompt = _DEFAULT_SYSTEM_PROMPT = ""
 
-
 #system_prompt = st.sidebar.text_area(
 #    "Custom Instructions",
 #    _DEFAULT_SYSTEM_PROMPT,
@@ -94,9 +84,8 @@ system_prompt = _DEFAULT_SYSTEM_PROMPT = ""
 system_prompt = system_prompt.strip().replace("{", "{{").replace("}", "}}")
 
 chain_type = st.sidebar.radio(
-    "Choose a chain type",
-    ("GPT 3.5 Chain", "RAG Chain for Streamlit Docs"),  # Added "RAG Chain for Streamlit Docs" option
-    help="Choose the chain type.",
+    "Choose LLM type",
+    ("Classic `GPT 3.5` Chain", "RAG Chain for Streamlit Docs"), index =1
 )
 
 memory = ConversationBufferMemory(
@@ -106,12 +95,12 @@ memory = ConversationBufferMemory(
 )
 
 # Create Chain
-#if chain_type == "GPT 3.5 Chain":
+#if chain_type == "Classic `GPT 3.5` Chain":
 #    chain = get_llm_chain(system_prompt, memory)
 #else:
 #    chain = get_expression_chain(system_prompt, memory)
 
-if chain_type == "GPT 3.5 Chain":
+if chain_type == "Classic `GPT 3.5` Chain":
     chain = get_llm_chain(system_prompt, memory)
 else:  # This will be triggered when "RAG Chain for Streamlit Docs" is selected
     # chain = initialize_chain(system_prompt, memory)
@@ -161,7 +150,7 @@ def _reset_feedback():
     st.session_state.feedback = None
 
 
-if prompt := st.chat_input(placeholder="Ask me a question!"):
+if prompt := st.chat_input(placeholder="Ask me a question about the Streamlit Docs!"):
     st.chat_message("user").write(prompt)
     _reset_feedback()
     with st.chat_message("assistant", avatar="🦜"):
@@ -179,7 +168,7 @@ if prompt := st.chat_input(placeholder="Ask me a question!"):
             }
         
         # Handle LLMChain separately as it uses the invoke method
-        if chain_type == "GPT 3.5 Chain":
+        if chain_type == "Classic `GPT 3.5` Chain":
             message_placeholder.markdown("thinking...")
             full_response = chain.invoke(input_structure, config=runnable_config)["text"]
 
