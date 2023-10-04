@@ -20,7 +20,7 @@ from essential_chain import initialize_chain
 import os
 
 st.set_page_config(
-    page_title="Chat with the Streamlit docs, powered by LangChain",
+    page_title="Chat with the Streamlit docs via LangChain, Collect user feedback via Trubrics and LangSmith!",
     page_icon="🦜",
 )
 
@@ -48,12 +48,26 @@ client = Client(api_url=langchain_endpoint, api_key=langchain_api_key)
 # Set environment variables using the values from st.secrets
 os.environ['OPENAI_API_KEY'] = st.secrets["api_keys"]["OPENAI_API_KEY"]
 
-# The rest of your script...
 
+col1, col2, col3 = st.columns([0.6, 3, 1])
+
+with col2:
+    st.image("images/logo.png", width=500)
+    
+
+st.markdown('___')
+
+st.write('👇 Ask a question about the Streamlit Docs below - Check our blog post here')
+#col1, col2, col3 = st.columns([0.11, 1, 1])
+#with col1:
+#    arrow = "images/red_arrow.png"
+#    st.image(arrow, width=110)
+
+# The rest of your script...
 
 # client = Client(api_url=langchain_endpoint, api_key=langchain_api_key)
 
-st.subheader("Chat with the Streamlit docs, powered by LangChain 💬🦜")
+# st.subheader("Chat with the Streamlit docs, powered by LangChain 💬🦜")
 
 # Initialize State
 if "trace_link" not in st.session_state:
@@ -69,16 +83,19 @@ _DEFAULT_SYSTEM_PROMPT = ""
 #     " You love poetry, reading, funk music, and friendship!"
 # )
 
-system_prompt = st.sidebar.text_area(
-    "Custom Instructions",
-    _DEFAULT_SYSTEM_PROMPT,
-    help="Custom instructions to provide the language model to determine style, personality, etc.",
-)
+system_prompt = _DEFAULT_SYSTEM_PROMPT = ""
+
+
+#system_prompt = st.sidebar.text_area(
+#    "Custom Instructions",
+#    _DEFAULT_SYSTEM_PROMPT,
+#    help="Custom instructions to provide the language model to determine style, personality, etc.",
+#)
 system_prompt = system_prompt.strip().replace("{", "{{").replace("}", "}}")
 
 chain_type = st.sidebar.radio(
     "Choose a chain type",
-    ("LLMChain", "RAG Chain for Streamlit Docs"),  # Added "RAG Chain for Streamlit Docs" option
+    ("GPT 3.5 Chain", "RAG Chain for Streamlit Docs"),  # Added "RAG Chain for Streamlit Docs" option
     help="Choose the chain type.",
 )
 
@@ -89,12 +106,12 @@ memory = ConversationBufferMemory(
 )
 
 # Create Chain
-#if chain_type == "LLMChain":
+#if chain_type == "GPT 3.5 Chain":
 #    chain = get_llm_chain(system_prompt, memory)
 #else:
 #    chain = get_expression_chain(system_prompt, memory)
 
-if chain_type == "LLMChain":
+if chain_type == "GPT 3.5 Chain":
     chain = get_llm_chain(system_prompt, memory)
 else:  # This will be triggered when "RAG Chain for Streamlit Docs" is selected
     # chain = initialize_chain(system_prompt, memory)
@@ -162,7 +179,7 @@ if prompt := st.chat_input(placeholder="Ask me a question!"):
             }
         
         # Handle LLMChain separately as it uses the invoke method
-        if chain_type == "LLMChain":
+        if chain_type == "GPT 3.5 Chain":
             message_placeholder.markdown("thinking...")
             full_response = chain.invoke(input_structure, config=runnable_config)["text"]
 
