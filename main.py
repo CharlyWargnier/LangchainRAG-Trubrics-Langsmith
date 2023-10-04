@@ -198,8 +198,15 @@ if prompt := st.chat_input(placeholder="Ask me a question about the Streamlit Do
         # url = client.read_run(run.id).url
         st.session_state.trace_link = url
 
-# feedback_option = "faces" if st.sidebar.checkbox("Use faces feedback system", value=False) else "thumbs"
-feedback_option = "faces" if st.toggle(label="`Thumbs` ⇄ `Faces`", value=False) else "thumbs"
+
+# Check if there are chat messages
+has_chat_messages = len(st.session_state.get("langchain_messages", [])) > 0
+
+# Only show the feedback toggle if there are chat messages
+if has_chat_messages:
+    feedback_option = "faces" if st.toggle(label="`Thumbs` ⇄ `Faces`", value=False) else "thumbs"
+else:
+    pass
 
 if st.session_state.get("run_id"):
     feedback = streamlit_feedback(
