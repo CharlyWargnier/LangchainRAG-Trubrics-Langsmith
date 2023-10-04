@@ -25,30 +25,53 @@ st.set_page_config(
 # Set LangSmith environment variables
 os.environ['OPENAI_API_KEY'] = st.secrets["api_keys"]["OPENAI_API_KEY"]
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_API_KEY"] = "ls__ea506496a9f54be786205187a0bd84ed"
 os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
 os.environ["LANGCHAIN_PROJECT"] = st.sidebar.text_input(
     "Name your LangSmith Project", value="Streamlit Demo"
 )
 
-langchain_api_key = st.sidebar.text_input(
-    "Add your LangSmith Key (Demo API key by default)", value="ls__ea506496a9f54be786205187a0bd84ed", type='password')
+# Add the toggle for LangSmith API key source
+use_secret_key = st.sidebar.toggle(label="Demo LangSmith API key", value=True)
+
+# Conditionally get the API key based on the toggle
+if use_secret_key:
+    langchain_api_key = st.secrets["api_keys"]["LANGSMITH_API_KEY"]  # assuming it's stored under this key in secrets
+else:
+    langchain_api_key = st.sidebar.text_input(
+        "👇 Add your LangSmith Key",
+        value="",
+        placeholder="Your_LangSmith_Key_Here",
+        label_visibility = "collapsed"
+    )
 
 if "last_run" not in st.session_state:
     st.session_state["last_run"] = "some_initial_value"
 
 langchain_endpoint = "https://api.smith.langchain.com"
-client = Client(api_url=langchain_endpoint, api_key=langchain_api_key)
+
+# Existing code above...
+
+
+# Existing code below...
+# client = Client(api_url=langchain_endpoint, api_key=langchain_api_key)
 
 col1, col2, col3 = st.columns([0.6, 3, 1])
 
 with col2:
     st.image("images/logo.png", width=470)
     
-
 st.markdown('___')
 
+
 st.write('👇 Ask a question about the Streamlit Docs below - Check our blog post here')
+
+# Check if the LangSmith API key is provided
+if not langchain_api_key or langchain_api_key.strip() == "Your_LangSmith_Key_Here":
+    st.info("⚠️ A LangSmith API key must be provided to continue.")
+else:
+    client = Client(api_url=langchain_endpoint, api_key=langchain_api_key)
+
+
 #col1, col2, col3 = st.columns([0.11, 1, 1])
 #with col1:
 #    arrow = "images/red_arrow.png"
@@ -85,7 +108,7 @@ system_prompt = system_prompt.strip().replace("{", "{{").replace("}", "}}")
 
 chain_type = st.sidebar.radio(
     "Choose LLM type",
-    ("Classic `GPT 3.5` Chain", "RAG Chain for Streamlit Docs"), index =1
+    ("Classic `GPT 3.5` LLM", "RAG LLM for Streamlit Docs 🔥"), index =1
 )
 
 memory = ConversationBufferMemory(
@@ -95,14 +118,14 @@ memory = ConversationBufferMemory(
 )
 
 # Create Chain
-#if chain_type == "Classic `GPT 3.5` Chain":
+#if chain_type == "Classic `GPT 3.5` LLM":
 #    chain = get_llm_chain(system_prompt, memory)
 #else:
 #    chain = get_expression_chain(system_prompt, memory)
 
-if chain_type == "Classic `GPT 3.5` Chain":
+if chain_type == "Classic `GPT 3.5` LLM":
     chain = get_llm_chain(system_prompt, memory)
-else:  # This will be triggered when "RAG Chain for Streamlit Docs" is selected
+else:  # This will be triggered when "RAG LLM for Streamlit Docs 🔥" is selected
     # chain = initialize_chain(system_prompt, memory)
     chain = initialize_chain(system_prompt, _memory=memory)
 
@@ -160,15 +183,15 @@ if prompt := st.chat_input(placeholder="Ask me a question about the Streamlit Do
         # Define the basic input structure for the chains
         input_structure = {"input": prompt}
         
-        # Modify the input structure for the RAG Chain for Streamlit Docs
-        if chain_type == "RAG Chain for Streamlit Docs":
+        # Modify the input structure for the RAG LLM for Streamlit Docs 🔥
+        if chain_type == "RAG LLM for Streamlit Docs 🔥":
             input_structure = {
                 "question": prompt, 
                 "chat_history": [(msg.type, msg.content) for msg in st.session_state.langchain_messages]
             }
         
         # Handle LLMChain separately as it uses the invoke method
-        if chain_type == "Classic `GPT 3.5` Chain":
+        if chain_type == "Classic `GPT 3.5` LLM":
             message_placeholder.markdown("thinking...")
             full_response = chain.invoke(input_structure, config=runnable_config)["text"]
 
