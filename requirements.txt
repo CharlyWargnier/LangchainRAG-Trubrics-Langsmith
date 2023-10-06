@@ -1,6 +1,7 @@
 streamlit==1.27.0
 streamlit-feedback==0.1.2
-langchain>=0.0.247
+langchain==0.0.309 # new
+# langchain>=0.0.247 # worked
 # langchain==0.0.292
 langsmith==0.0.43
 openai
