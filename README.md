@@ -20,9 +20,7 @@
   <img src="https://github.com/CharlyWargnier/LangchainRAG-Trubrics-Langsmith/assets/27242399/28b28ff9-c289-4c66-b44d-f99bc4f1c0ba" width="600">
 </p>
 
-This demo app made with [Streamlit](https://streamlit.io/) allows users to chat with the [Streamlit docs](https://docs.streamlit.io/) using [LangChain](https://www.langchain.com/)'s Retrieval-Augmented Generation (RAG) capabilities, ensuring accurate and precise answers tailored to user queries.
-
-By integrating the [Trubrics' Feedback component](https://github.com/trubrics/streamlit-feedback), the app provides a dynamic way to capture user feedback, which is then monitored in [LangSmith](https://www.langchain.com/langsmith) for further analyses and improvements.
+This demo app made with [Streamlit](https://streamlit.io/) allows users to chat with the [Streamlit docs](https://docs.streamlit.io/) using [LangChain](https://www.langchain.com/)'s Retrieval-Augmented Generation (RAG) capabilities. By integrating the [Trubrics' Feedback component](https://github.com/trubrics/streamlit-feedback), the app provides a dynamic way to capture user feedback, which is then monitored in [LangSmith](https://www.langchain.com/langsmith) for further analyses and improvements.
 
 ## Demo App
 
@@ -32,11 +30,11 @@ You can try out the demo on Streamlit Community Cloud
 
 ## Prerequisites
 
-Before diving into the app, you need to ensure you have the necessary API keys:
+Ensure you have the necessary API keys:
 
 ### Get a LangSmith API key
 
-Sign up for LangSmith at smith.langchain.com and generate an API Key.
+Sign up for LangSmith at [smith.langchain.com](https://smith.langchain.com/) and generate an API Key.
 To do this, click on the `API Key` icon and then click on `Create API Key` (make sure to copy it).
 
 <p align="center">
