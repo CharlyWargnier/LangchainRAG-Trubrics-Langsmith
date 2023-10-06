@@ -91,7 +91,7 @@ system_prompt = system_prompt.strip().replace("{", "{{").replace("}", "}}")
 
 chain_type = st.sidebar.radio(
     "Choose your LLM:",
-    ("Classic `GPT 3.5` LLM", "RAG LLM for Streamlit Docs 🔥"),
+    ("Classic `GPT 3.5` LLM", "RAG LLM for Streamlit Docs ✨"),
     index=1,
 )
 
@@ -103,7 +103,7 @@ memory = ConversationBufferMemory(
 
 if chain_type == "Classic `GPT 3.5` LLM":
     chain = get_llm_chain(system_prompt, memory)
-else:  # This will be triggered when "RAG LLM for Streamlit Docs 🔥" is selected
+else:  # This will be triggered when "RAG LLM for Streamlit Docs ✨" is selected
     chain = initialize_chain(system_prompt, _memory=memory)
 
 if st.sidebar.button("Clear message history"):
@@ -154,7 +154,7 @@ if prompt := st.chat_input(placeholder="Ask a question about the Streamlit docs!
 
         input_structure = {"input": prompt}
 
-        if chain_type == "RAG LLM for Streamlit Docs 🔥":
+        if chain_type == "RAG LLM for Streamlit Docs ✨":
             input_structure = {
                 "question": prompt,
                 "chat_history": [
