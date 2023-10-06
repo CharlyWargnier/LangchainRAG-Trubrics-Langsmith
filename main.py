@@ -71,7 +71,7 @@ st.markdown("**✨ Chat with the Streamlit docs via [:blue[LangChain]](https://w
 
 st.markdown("___")
 
-st.write("👇  Ask a question about the [Streamlit docs](https://docs.streamlit.io/) or 💡 Check out the tutorial to build this app in our [blog post](https://blog.streamlit.io/)")
+st.write("👇  Ask a question about the [Streamlit docs](https://docs.streamlit.io/) or 💡 Check out the tutorial to build this app in our [blog post](https://blog.streamlit.io/how-in-app-feedback-can-increase-your-chatbots-performance/)")
 
 # Check if the LangSmith API key is provided
 if not langchain_api_key or langchain_api_key.strip() == "Your_LangSmith_Key_Here":
