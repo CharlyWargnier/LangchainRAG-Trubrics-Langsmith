@@ -12,7 +12,7 @@
 
 ✨ Chat with the [Streamlit docs](https://docs.streamlit.io/) using [LangChain](https://www.langchain.com/) and collect feedback with [Trubrics](https://github.com/trubrics/streamlit-feedback) and [LangSmith](https://www.langchain.com/langsmith).
 
-📖 For more details, check our [Streamlit blog post]([https://blog.streamlit.io/](https://blog.streamlit.io/how-in-app-feedback-can-increase-your-chatbots-performance/)).
+📖 For more details, check our [Streamlit blog post](https://blog.streamlit.io/how-in-app-feedback-can-increase-your-chatbots-performance/).
 
 ## Overview of the App
 
@@ -52,6 +52,6 @@ You can get your own OpenAI API key by following these instructions:
 
 ## Need Support?
 
-If you require assistance or have any questions, feel free to reach out to me on X (formerly Twitter)[@datachaz](https://twitter.com/datachaz) or on the [Streamlit forum](https://discuss.streamlit.io/)!
+If you require assistance or have any questions, feel free to reach out to me on X (formerly Twitter) at [@datachaz](https://twitter.com/datachaz) or on the [Streamlit forums](https://discuss.streamlit.io/)!
 
 
