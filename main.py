@@ -1,13 +1,10 @@
-"""Example Streamlit chat UI that exposes a Feedback button and link to LangSmith traces."""
 
+# If trying this app locally, comment out these 3 lines
 __import__("pysqlite3")
 import sys
-
 sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 
-
 import os
-
 import streamlit as st
 from langchain.callbacks.tracers.langchain import wait_for_all_tracers
 from langchain.callbacks.tracers.run_collector import RunCollectorCallbackHandler
@@ -55,19 +52,12 @@ if "last_run" not in st.session_state:
 
 langchain_endpoint = "https://api.smith.langchain.com"
 
-# Existing code above...
-
-
-# Existing code below...
-# client = Client(api_url=langchain_endpoint, api_key=langchain_api_key)
-
 col1, col2, col3 = st.columns([0.6, 3, 1])
 
 with col2:
     st.image("images/logo.png", width=470)
 
 st.markdown("___")
-
 
 st.write("👇 Ask a question about the Streamlit Docs below - Check our blog post here")
 
@@ -77,39 +67,14 @@ if not langchain_api_key or langchain_api_key.strip() == "Your_LangSmith_Key_Her
 else:
     client = Client(api_url=langchain_endpoint, api_key=langchain_api_key)
 
-
-# col1, col2, col3 = st.columns([0.11, 1, 1])
-# with col1:
-#    arrow = "images/red_arrow.png"
-#    st.image(arrow, width=110)
-
-# The rest of your script...
-
-# client = Client(api_url=langchain_endpoint, api_key=langchain_api_key)
-
-# st.subheader("Chat with the Streamlit docs, powered by LangChain 💬🦜")
-
 # Initialize State
 if "trace_link" not in st.session_state:
     st.session_state.trace_link = None
 if "run_id" not in st.session_state:
     st.session_state.run_id = None
 
-# Add a button to choose between llmchain and expression chain
 _DEFAULT_SYSTEM_PROMPT = ""
-
-# _DEFAULT_SYSTEM_PROMPT = (
-#     "You are a funky parrot pal. You are not an AI. You are a parrot."
-#     " You love poetry, reading, funk music, and friendship!"
-# )
-
 system_prompt = _DEFAULT_SYSTEM_PROMPT = ""
-
-# system_prompt = st.sidebar.text_area(
-#    "Custom Instructions",
-#    _DEFAULT_SYSTEM_PROMPT,
-#    help="Custom instructions to provide the language model to determine style, personality, etc.",
-# )
 system_prompt = system_prompt.strip().replace("{", "{{").replace("}", "}}")
 
 chain_type = st.sidebar.radio(
@@ -124,18 +89,10 @@ memory = ConversationBufferMemory(
     memory_key="chat_history",
 )
 
-# Create Chain
-# if chain_type == "Classic `GPT 3.5` LLM":
-#    chain = get_llm_chain(system_prompt, memory)
-# else:
-#    chain = get_expression_chain(system_prompt, memory)
-
 if chain_type == "Classic `GPT 3.5` LLM":
     chain = get_llm_chain(system_prompt, memory)
 else:  # This will be triggered when "RAG LLM for Streamlit Docs 🔥" is selected
-    # chain = initialize_chain(system_prompt, memory)
     chain = initialize_chain(system_prompt, _memory=memory)
-
 
 if st.sidebar.button("Clear message history"):
     print("Clearing message history")
@@ -144,7 +101,6 @@ if st.sidebar.button("Clear message history"):
     st.session_state.run_id = None
 
 
-# Display chat messages from history on app rerun
 # NOTE: This won't be necessary for Streamlit 1.26+, you can just pass the type directly
 # https://github.com/streamlit/streamlit/pull/7094
 def _get_openai_type(msg):
@@ -155,7 +111,6 @@ def _get_openai_type(msg):
     if msg.type == "chat":
         return msg.role
     return msg.type
-
 
 for msg in st.session_state.langchain_messages:
     streamlit_type = _get_openai_type(msg)
@@ -174,11 +129,9 @@ if st.session_state.trace_link:
         unsafe_allow_html=True,
     )
 
-
 def _reset_feedback():
     st.session_state.feedback_update = None
     st.session_state.feedback = None
-
 
 if prompt := st.chat_input(placeholder="Ask me a question about the Streamlit Docs!"):
     st.chat_message("user").write(prompt)
@@ -187,10 +140,8 @@ if prompt := st.chat_input(placeholder="Ask me a question about the Streamlit Do
         message_placeholder = st.empty()
         full_response = ""
 
-        # Define the basic input structure for the chains
         input_structure = {"input": prompt}
 
-        # Modify the input structure for the RAG LLM for Streamlit Docs 🔥
         if chain_type == "RAG LLM for Streamlit Docs 🔥":
             input_structure = {
                 "question": prompt,
@@ -200,7 +151,6 @@ if prompt := st.chat_input(placeholder="Ask me a question about the Streamlit Do
                 ],
             }
 
-        # Handle LLMChain separately as it uses the invoke method
         if chain_type == "Classic `GPT 3.5` LLM":
             message_placeholder.markdown("thinking...")
             full_response = chain.invoke(input_structure, config=runnable_config)[
@@ -214,8 +164,6 @@ if prompt := st.chat_input(placeholder="Ask me a question about the Streamlit Do
             memory.save_context({"input": prompt}, {"output": full_response})
 
         message_placeholder.markdown(full_response)
-
-        # ... (rest of your existing code)
 
         # The run collector will store all the runs in order. We'll just take the root and then
         # reset the list for next interaction.
@@ -231,7 +179,6 @@ if prompt := st.chat_input(placeholder="Ask me a question about the Streamlit Do
         st.session_state.trace_link = url
 
 
-# Check if there are chat messages
 has_chat_messages = len(st.session_state.get("langchain_messages", [])) > 0
 
 # Only show the feedback toggle if there are chat messages
