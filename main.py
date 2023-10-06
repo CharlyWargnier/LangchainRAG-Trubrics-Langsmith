@@ -21,16 +21,24 @@ st.set_page_config(
     page_icon="🦜",
 )
 
+# ... [rest of the code above]
+
 # Set LangSmith environment variables
 os.environ["OPENAI_API_KEY"] = st.secrets["api_keys"]["OPENAI_API_KEY"]
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
-os.environ["LANGCHAIN_PROJECT"] = st.sidebar.text_input(
-    "Name your LangSmith Project", value="Streamlit Demo"
-)
 
 # Add the toggle for LangSmith API key source
 use_secret_key = st.sidebar.toggle(label="Demo LangSmith API key", value=True)
+
+# Conditionally set the project name based on the toggle
+if use_secret_key:
+    os.environ["LANGCHAIN_PROJECT"] = "Streamlit Demo"
+else:
+    project_name = st.sidebar.text_input(
+        "Name your LangSmith Project:", value="Streamlit Demo"
+    )
+    os.environ["LANGCHAIN_PROJECT"] = project_name
 
 # Conditionally get the API key based on the toggle
 if use_secret_key:
@@ -55,15 +63,19 @@ langchain_endpoint = "https://api.smith.langchain.com"
 col1, col2, col3 = st.columns([0.6, 3, 1])
 
 with col2:
-    st.image("images/logo.png", width=470)
+    st.image("images/logo.png", width=460)
+
+st.write("")
+
+st.markdown("**✨ Chat with the Streamlit docs via [:blue[LangChain]](https://www.langchain.com/)** 🪄 **Collect user feedback via [:orange[Trubrics]](https://github.com/trubrics/streamlit-feedback) and [:green[LangSmith]](https://www.langchain.com/langsmith)**")
 
 st.markdown("___")
 
-st.write("👇 Ask a question about the Streamlit Docs below - Check our blog post here")
+st.write("👇 Ask a question about the [Streamlit docs](https://docs.streamlit.io/) below - Check our [blog post here](https://blog.streamlit.io/)")
 
 # Check if the LangSmith API key is provided
 if not langchain_api_key or langchain_api_key.strip() == "Your_LangSmith_Key_Here":
-    st.info("⚠️ A LangSmith API key must be provided to continue.")
+    st.info("⚠️ Add your [LangSmith API key](https://python.langchain.com/docs/guides/langsmith/walkthrough) to continue, or switch to the Demo key")
 else:
     client = Client(api_url=langchain_endpoint, api_key=langchain_api_key)
 
@@ -78,7 +90,7 @@ system_prompt = _DEFAULT_SYSTEM_PROMPT = ""
 system_prompt = system_prompt.strip().replace("{", "{{").replace("}", "}}")
 
 chain_type = st.sidebar.radio(
-    "Choose LLM type",
+    "Choose your LLM:",
     ("Classic `GPT 3.5` LLM", "RAG LLM for Streamlit Docs 🔥"),
     index=1,
 )
@@ -133,7 +145,7 @@ def _reset_feedback():
     st.session_state.feedback_update = None
     st.session_state.feedback = None
 
-if prompt := st.chat_input(placeholder="Ask me a question about the Streamlit Docs!"):
+if prompt := st.chat_input(placeholder="Ask a question about the Streamlit docs!"):
     st.chat_message("user").write(prompt)
     _reset_feedback()
     with st.chat_message("assistant", avatar="🦜"):
