@@ -4,9 +4,9 @@ langchain==0.0.309 # new
 # langchain>=0.0.247 # worked
 # langchain==0.0.292
 langsmith==0.0.43
-openai==0.23.1
-chromadb==0.4.13
-tiktoken==0.5.1
+openai
+chromadb
+tiktoken
 pysqlite3-binary
 
 
