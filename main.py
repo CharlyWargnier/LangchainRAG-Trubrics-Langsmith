@@ -145,50 +145,58 @@ def _reset_feedback():
     st.session_state.feedback_update = None
     st.session_state.feedback = None
 
+
+MAX_CHAR_LIMIT = 500  # Adjust this value as needed
+
 if prompt := st.chat_input(placeholder="Ask a question about the Streamlit docs!"):
-    st.chat_message("user").write(prompt)
-    _reset_feedback()
-    with st.chat_message("assistant", avatar="🦜"):
-        message_placeholder = st.empty()
-        full_response = ""
 
-        input_structure = {"input": prompt}
+    if len(prompt) > MAX_CHAR_LIMIT:
+        st.warning(f"⚠️ Your input is too long! Please limit your input to {MAX_CHAR_LIMIT} characters.")
+        prompt = None  # Reset the prompt so it doesn't get processed further
+    else:
+        st.chat_message("user").write(prompt)
+        _reset_feedback()
+        with st.chat_message("assistant", avatar="🦜"):
+            message_placeholder = st.empty()
+            full_response = ""
 
-        if chain_type == "RAG LLM for Streamlit Docs ✨":
-            input_structure = {
-                "question": prompt,
-                "chat_history": [
-                    (msg.type, msg.content)
-                    for msg in st.session_state.langchain_messages
-                ],
-            }
+            input_structure = {"input": prompt}
 
-        if chain_type == "Classic `GPT 3.5` LLM":
-            message_placeholder.markdown("thinking...")
-            full_response = chain.invoke(input_structure, config=runnable_config)[
-                "text"
-            ]
+            if chain_type == "RAG LLM for Streamlit Docs ✨":
+                input_structure = {
+                    "question": prompt,
+                    "chat_history": [
+                        (msg.type, msg.content)
+                        for msg in st.session_state.langchain_messages
+                    ],
+                }
 
-        else:
-            for chunk in chain.stream(input_structure, config=runnable_config):
-                full_response += chunk["answer"]  # Updated to use the 'answer' key
-                message_placeholder.markdown(full_response + "▌")
-            memory.save_context({"input": prompt}, {"output": full_response})
+            if chain_type == "Classic `GPT 3.5` LLM":
+                message_placeholder.markdown("thinking...")
+                full_response = chain.invoke(input_structure, config=runnable_config)[
+                    "text"
+                ]
 
-        message_placeholder.markdown(full_response)
+            else:
+                for chunk in chain.stream(input_structure, config=runnable_config):
+                    full_response += chunk["answer"]  # Updated to use the 'answer' key
+                    message_placeholder.markdown(full_response + "▌")
+                memory.save_context({"input": prompt}, {"output": full_response})
 
-        # The run collector will store all the runs in order. We'll just take the root and then
-        # reset the list for next interaction.
-        run = run_collector.traced_runs[0]
-        run_collector.traced_runs = []
-        st.session_state.run_id = run.id
-        wait_for_all_tracers()
-        # Requires langsmith >= 0.0.19
-        url = client.share_run(run.id)
-        # Or if you just want to use this internally
-        # without sharing
-        # url = client.read_run(run.id).url
-        st.session_state.trace_link = url
+            message_placeholder.markdown(full_response)
+
+            # The run collector will store all the runs in order. We'll just take the root and then
+            # reset the list for next interaction.
+            run = run_collector.traced_runs[0]
+            run_collector.traced_runs = []
+            st.session_state.run_id = run.id
+            wait_for_all_tracers()
+            # Requires langsmith >= 0.0.19
+            url = client.share_run(run.id)
+            # Or if you just want to use this internally
+            # without sharing
+            # url = client.read_run(run.id).url
+            st.session_state.trace_link = url
 
 
 has_chat_messages = len(st.session_state.get("langchain_messages", [])) > 0
